@@ -3,8 +3,8 @@ Twitter Command - An easy way to search tweets with PHP
 
 Twitter Command lets you search your timeline with specific parameters to find the kind of tweets you want. If a tweet is found, Twitter Command will trigger a function that you have created, so you can do everything you want with the found tweet.
 
-### How does it work?
--------
+How does it work?
+-----------------
 ####It all starts with the config file:
 ```PHP
 // config.php
