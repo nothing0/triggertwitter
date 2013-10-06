@@ -11,6 +11,6 @@ return array(
 			//'retweet' => true,
 		),
 		'do' => array('path' => ROOT_PATH . 'actions/TweetFound.php', 'class_name' => 'TweetFound', 'method_name' => 'twitterCommand'),  
-		'extra_params' => array('jaa' => true) 
+		'extra_params' => array('found_timestamp' => time()) 
 	),
 );
