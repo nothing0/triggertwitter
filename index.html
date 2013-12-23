@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Twitter Command by nothing0</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Twitter Command</h1>
+        <h2>Set requirements for tweets and trigger your custom functions with the found tweets</h2>
+        <a href="https://github.com/nothing0/twitter-command" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="twitter-command---an-easy-way-to-search-tweets-with-php" class="anchor" href="#twitter-command---an-easy-way-to-search-tweets-with-php"><span class="octicon octicon-link"></span></a>Twitter Command - An easy way to search tweets with PHP</h2>
+
+<p>Twitter Command lets you search your timeline with specific parameters to find the kind of tweets you want. If a tweet is found, Twitter Command will trigger a function that you have created, so you can do everything you want with the found tweet.</p>
+
+<h2>
+<a name="how-does-it-work" class="anchor" href="#how-does-it-work"><span class="octicon octicon-link"></span></a>How does it work?</h2>
+
+<h4>
+<a name="it-all-starts-with-the-config-file" class="anchor" href="#it-all-starts-with-the-config-file"><span class="octicon octicon-link"></span></a>It all starts with the config file:</h4>
+
+<div class="highlight highlight-PHP"><pre><span class="c1">// config.php</span>
+
+<span class="cm">/* ===================================</span>
+<span class="cm"> * Twitteroauth keys</span>
+<span class="cm"> * ===================================</span>
+<span class="cm"> */</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'CONSUMER_KEY'</span><span class="p">,</span>          <span class="s1">''</span><span class="p">);</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'CONSUMER_SECRET'</span><span class="p">,</span>       <span class="s1">''</span><span class="p">);</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'OAUTH_TOKEN'</span><span class="p">,</span>           <span class="s1">''</span><span class="p">);</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'OAUTH_TOKEN_SECRET'</span><span class="p">,</span>    <span class="s1">''</span><span class="p">);</span>
+
+<span class="cm">/* ===================================</span>
+<span class="cm"> * Global</span>
+<span class="cm"> * ===================================</span>
+<span class="cm"> */</span>
+<span class="c1">// ROOT_PATH is the path to this location where all the twitter-command files are stored</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'ROOT_PATH'</span><span class="p">,</span>             <span class="s1">'/path/to/webserver/myProject/twitter-command/'</span><span class="p">);</span>
+
+<span class="c1">// PROJECT_PATH is the path to the project where twitter-command is used for, so that some files don't have to be in the ROOT_PATH</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'PROJECT_PATH'</span><span class="p">,</span>          <span class="s1">'/path/to/webserver/myProject/'</span><span class="p">);</span>
+
+<span class="c1">// The name of the actions file</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'ACTIONS_FILE'</span><span class="p">,</span>          <span class="nx">ROOT_PATH</span> <span class="o">.</span> <span class="s1">'actions.php'</span><span class="p">);</span>
+
+<span class="c1">// ROOT_PATH can be changed to PROJECT_PATH if the actions directory isn't in the root directory</span>
+<span class="nb">define</span><span class="p">(</span><span class="s1">'ACTIONS_DIRECTORY'</span><span class="p">,</span>     <span class="nx">ROOT_PATH</span> <span class="o">.</span> <span class="s1">'actions/'</span><span class="p">);</span> 
+</pre></div>
+
+<p>This is the most basic setup of the config file. The ROOT_PATH means the path to twitter-command (can be within your project) and PROJECT_PATH means the path to your project.</p>
+
+<h4>
+<a name="after-that-we-have-actionsphp" class="anchor" href="#after-that-we-have-actionsphp"><span class="octicon octicon-link"></span></a>After that, we have actions.php:</h4>
+
+<div class="highlight highlight-PHP"><pre><span class="c1">// actions.php</span>
+
+<span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">'tweet'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>  
+        <span class="s1">'validation'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">'text_equals'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">'Using twitter-command'</span><span class="p">,</span> <span class="s1">'twitter-command!'</span><span class="p">)</span> <span class="c1">// The tweet must be equal to the given text</span>
+        <span class="p">),</span>
+        <span class="s1">'do'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">'path'</span> <span class="o">=&gt;</span> <span class="nx">ROOT_PATH</span> <span class="o">.</span> <span class="s1">'actions/TweetFound.php'</span><span class="p">,</span> <span class="s1">'class_name'</span> <span class="o">=&gt;</span> <span class="s1">'TweetFound'</span><span class="p">,</span> <span class="s1">'method_name'</span> <span class="o">=&gt;</span> <span class="s1">'twitterCommand'</span><span class="p">),</span> 
+        <span class="s1">'extra_params'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">'found_timestamp'</span> <span class="o">=&gt;</span> <span class="nb">time</span><span class="p">())</span> 
+    <span class="p">),</span>
+<span class="p">);</span>
+</pre></div>
+
+<p>What happens above is that there is searched for a tweet with specific text. If the tweet if found, the method TweetFound::twitterCommand is being triggered in actions/TweetFound.php.
+There are various methods to search with. In the example above, text_equals is used. These methods are available:</p>
+
+<ul>
+<li>text_equals
+
+<ul>
+<li>array('The text the tweet must have')</li>
+</ul>
+</li>
+<li>text_contains
+
+<ul>
+<li>array('The text the tweet must contain')</li>
+</ul>
+</li>
+<li>hashtags
+
+<ul>
+<li>array('hashtags')</li>
+</ul>
+</li>
+<li>mentions
+
+<ul>
+<li>array('mentions')</li>
+</ul>
+</li>
+<li>screen_name
+
+<ul>
+<li>array('screen_names')</li>
+</ul>
+</li>
+<li>retweet
+
+<ul>
+<li>bool -&gt; if true, the tweet must be a retweet. If false, it may not be a retweet. If it may be both, don't set it.</li>
+</ul>
+</li>
+</ul><p>If there are more than 1 items in the array, they are optional. Only 1 of them has to match to let it pass.
+If you leave the array empty, it will automatically pass if there is only one of the things that is searched for.
+Example:</p>
+
+<div class="highlight highlight-PHP"><pre>  <span class="s1">'hashtags'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(),</span> <span class="c1">// Empty array</span>
+</pre></div>
+
+<p>In this case it will pass if the tweet contains one or more hashtags, no matter what the text of it is. This also works with mentions.</p>
+
+<h4>
+<a name="the-method-thats-being-triggered" class="anchor" href="#the-method-thats-being-triggered"><span class="octicon octicon-link"></span></a>The method that's being triggered</h4>
+
+<p>In the example of actions.php, we see this:</p>
+
+<div class="highlight highlight-PHP"><pre><span class="s1">'do'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">'path'</span> <span class="o">=&gt;</span> <span class="nx">ROOT_PATH</span> <span class="o">.</span> <span class="s1">'actions/TweetFound.php'</span><span class="p">,</span> <span class="s1">'class_name'</span> <span class="o">=&gt;</span> <span class="s1">'TweetFound'</span><span class="p">,</span> <span class="s1">'method_name'</span> <span class="o">=&gt;</span> <span class="s1">'twitterCommand'</span><span class="p">),</span>
+<span class="s1">'extra_params'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">'found_timestamp'</span> <span class="o">=&gt;</span> <span class="nb">time</span><span class="p">())</span> 
+</pre></div>
+
+<p>This means the method TweetFound::twitterCommand will be triggered.</p>
+
+<p>That will look like this:</p>
+
+<div class="highlight highlight-PHP"><pre><span class="c1">// actions/TweetFound.php</span>
+
+<span class="k">class</span> <span class="nc">TweetFound</span> <span class="p">{</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">twitterCommand</span><span class="p">(</span><span class="nv">$tweet</span><span class="p">,</span> <span class="nv">$extra_params</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s2">"</span><span class="se">\n</span><span class="s2"> Tweet found! --&gt;"</span><span class="p">,</span> <span class="nv">$tweet</span><span class="o">-&gt;</span><span class="na">text</span><span class="p">;</span> 
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+
+<p>You can see that there are two parameters. The first one, $tweet, contains all the data of the tweet. The second, $extra_params, contains the extra parameters defined as extra_params. This can be useful for various things.
+With your custom function you can also save the tweet.</p>
+
+<h4>
+<a name="so-how-do-we-run-twitter-command" class="anchor" href="#so-how-do-we-run-twitter-command"><span class="octicon octicon-link"></span></a>So, how do we run twitter-command?</h4>
+
+<p>It's very simple. Do this in the command line: </p>
+
+<pre><code>$ cd /path/to/twitter-command
+$ php -f run.php
+</code></pre>
+
+<p>That's it!</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/nothing0/twitter-command/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/nothing0/twitter-command/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/nothing0/twitter-command"></a> is maintained by <a href="https://github.com/nothing0">nothing0</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
